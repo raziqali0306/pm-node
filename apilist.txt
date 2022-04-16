@@ -1,0 +1,50 @@
+### AUTH API's
+
+#1 http://localhost:3000/auth/register
+    
+    #REQUEST
+    method: POST
+    body: {
+        name: string, 
+        username: string, 
+        password: string, 
+        email: string,
+    }
+
+    #RESPONSE
+    status: 200
+    {
+        'user registered!'
+    }
+
+    status: 400
+    {
+        'username already exists!'
+    }
+
+
+#2 http://localhost:3000/auth/login
+    
+    #REQUEST
+    method: POST
+    body: {
+        username: string,
+        password: string,
+    }
+    
+    #RESPONSE
+    status: 200
+    {
+        name: '',
+        username: '',
+        email: '',
+        accesstoken: '',
+    }
+    status: 401
+    {
+        'wrong credentials'
+    }
+    status: 404
+    {
+        'user credentials not found!'
+    }
