@@ -29,12 +29,20 @@ const userSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
-        password: [
+        password: {
+          type: String,
+          required: true,
+        },
+        passwordHistory: [
           {
             type: String,
-            required: true,
+            required: false,
           },
         ],
+        url: {
+          type: String,
+          required: false,
+        },
       },
     ],
   },

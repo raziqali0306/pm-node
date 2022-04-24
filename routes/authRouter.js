@@ -11,6 +11,7 @@ router.post('/register', async (req, res) => {
       username: req.body.username,
       password: hashedPass,
       email: req.body.email,
+      credentials: [],
     });
     user
       .save()
@@ -32,20 +33,21 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ username: username });
     if (user !== null) {
       if (await argon2.verify(user.password, password)) {
-        const response = {
-          name: user._doc.name,
-          username: user._doc.username,
-          email: user._doc.email,
-        };
         const accesstoken = jwt.sign(
           {
-            name: response.name,
-            username: response.username,
-            email: response.email,
+            name: user._doc.name,
+            username: user._doc.username,
+            email: user._doc.email,
           },
           process.env.JWT_SECRETE_KEY,
         );
-        response.accesstoken = accesstoken;
+        const response = {
+          name: user.name,
+          username: user.username,
+          email: user.email,
+          credentials: user.credentials,
+          accesstoken: accesstoken,
+        };
         res.status(200).json(response);
       } else {
         res.status(401).json('wrong credentials');
@@ -57,21 +59,5 @@ router.post('/login', async (req, res) => {
     res.status(500).json('login failed');
   }
 });
-
-const verify = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (authHeader) {
-    const token = authHeader.split(' ')[1];
-    jwt.verify(token, process.env.JWT_SECRETE_KEY, (err, user) => {
-      if (err) {
-        return res.status(403).json('Token is invalid!');
-      }
-      req.user = user;
-      next();
-    });
-  } else {
-    res.status(401).json('You are not authenticated!');
-  }
-};
 
 module.exports = router;
