@@ -24,7 +24,6 @@ router.get('/credentials', verify, async (req, res) => {
     if (err) {
       res.status(500).json(err);
     } else {
-      console.log('here');
       if (data && data.credentials) {
         res.status(200).json(data.credentials);
       } else {
