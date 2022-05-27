@@ -19,6 +19,21 @@ const verify = (req, res, next) => {
   }
 };
 
+router.get('/credentials', verify, async (req, res) => {
+  User.findOne({ username: req.user.username }, (err, data) => {
+    if (err) {
+      res.status(500).json(err);
+    } else {
+      console.log('here');
+      if (data && data.credentials) {
+        res.status(200).json(data.credentials);
+      } else {
+        res.status(400).json('no credentials');
+      }
+    }
+  });
+});
+
 router.post('/add', verify, async (req, res) => {
   await User.updateOne(
     { username: req.user.username },
