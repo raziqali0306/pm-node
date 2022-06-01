@@ -25,7 +25,9 @@ router.get('/credentials', verify, async (req, res) => {
       res.status(500).json(err);
     } else {
       if (data && data.credentials) {
-        res.status(200).json(data.credentials);
+        let creds = data.credentials;
+        creds.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
+        res.status(200).json(creds);
       } else {
         res.status(400).json('no credentials');
       }
@@ -57,7 +59,6 @@ router.post('/add', verify, async (req, res) => {
 
 router.delete('/delete/:credId', verify, async (req, res) => {
   const credId = req.params.credId;
-
   await User.updateOne(
     { username: req.user.username },
     { $pull: { credentials: { _id: credId } } },
